@@ -1,6 +1,5 @@
 
 from flask import Flask, request, render_template, url_for, redirect, jsonify
-from flask_socketio import SocketIO, join_room
 from databse import get_in_data, user_api, get_key, create_api
 import block as blk
 import databse
@@ -23,7 +22,6 @@ logger.info("Started the web API")
 '''
 
 app = Flask(__name__)
-sock = SocketIO(app)
 
 @app.route('/register/phone_no=<phone>,password=<password>,country=<country>,state=<state>,zipcode=<zipcode>')
 def register(phone, password, country, state, zipcode):
@@ -62,6 +60,8 @@ def other_user_pub_key(api, token):
     else:
         return jsonify()
 
+    
+#chatbot
 @app.route('/chat/symptoms=<symptoms_list>') #symptioms should be like 0,1,0,0,0,1,0........
 def sym_deis(symptoms):
     return get_().pridict(symptoms)
