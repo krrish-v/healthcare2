@@ -41,6 +41,7 @@ def register(phone, password, country, state, zipcode):
         api = create_api().api()
         ins_api_key = databse.user_api().insert(api)
         load, prv = blk.rsa().loadkey(token)
+        password = blk.hash384(password) # password is stored in hash form
         in_data = get_in_data.insert(token, password, firstname, lastname, address, country, state, zip_code, phone_no, status, date)
         
         if in_data is True and ins_api_key is True:
