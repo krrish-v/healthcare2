@@ -1,12 +1,13 @@
 
 from flask import Flask, request, render_template, url_for, redirect, jsonify
+from flask_socketio import SocketIO, join_room
 from databse import get_in_data, user_api, get_key, create_api
 import block as blk
 import databse
 import time
 from model import get_
 
-'''
+
 try:
     file_log = open('log/web.log', 'r').close()
 except:
@@ -19,9 +20,10 @@ logging.basicConfig(filename="cloud_chain/api_/web.log",
 logger = logging.getLogger()
 logger.info("Started the web API")
 
-'''
+
 
 app = Flask(__name__)
+sock = SocketIO(app)
 
 @app.route('/register/phone_no=<phone>,password=<password>,country=<country>,state=<state>,zipcode=<zipcode>')
 def register(phone, password, country, state, zipcode):
@@ -38,10 +40,11 @@ def register(phone, password, country, state, zipcode):
         date = time.ctime()
         api = create_api().api()
         ins_api_key = databse.user_api().insert(api)
+        blk.rsa().loadkey(token)
         in_data = get_in_data.insert(token, password, firstname, lastname, address, country, state, zip_code, phone_no, status, date)
         
         if in_data is True and ins_api_key is True:
-            return jsonify({'api': api_key})
+            return jsonify({'api': api_key, 'token': token})
         else:
             return jsonify({'error': 502})
 
@@ -60,13 +63,10 @@ def other_user_pub_key(api, token):
     else:
         return jsonify()
 
-    
-#chatbot
 @app.route('/chat/symptoms=<symptoms_list>') #symptioms should be like 0,1,0,0,0,1,0........
 def sym_deis(symptoms):
     return get_().pridict(symptoms)
-
+    
 
 if __name__ == '__main__':
    app.run(host= '0.0.0.0', port=5000, debug=False)
-
