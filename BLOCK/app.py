@@ -57,9 +57,9 @@ def other_user_pub_key(api, token):
         public_key = get_key().get_pub(token)
         if public_key is not None: return jsonify({'status': 200, 'public_key': public_key})
         
-        elif public_key is False: return jsonify()
+        elif public_key is False: return jsonify({'error': 'server error'})
         
-        else: return jsonify()
+        else: return jsonify({'errror': 'wrong token'})
     else:
         return jsonify()
 
