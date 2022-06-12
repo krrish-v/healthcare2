@@ -65,3 +65,8 @@ def other_user_pub_key(api, token):
 @app.route('/chat/symptoms=<symptoms_list>') #symptioms should be like 0,1,0,0,0,1,0........
 def sym_deis(symptoms):
     return get_().pridict(symptoms)
+
+
+if __name__ == '__main__':
+   app.run(host= '0.0.0.0', port=5000, debug=False)
+
