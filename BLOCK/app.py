@@ -40,11 +40,11 @@ def register(phone, password, country, state, zipcode):
         date = time.ctime()
         api = create_api().api()
         ins_api_key = databse.user_api().insert(api)
-        blk.rsa().loadkey(token)
+        load, prv = blk.rsa().loadkey(token)
         in_data = get_in_data.insert(token, password, firstname, lastname, address, country, state, zip_code, phone_no, status, date)
         
         if in_data is True and ins_api_key is True:
-            return jsonify({'api': api_key, 'token': token})
+            return jsonify({'api': api_key, 'token': token, 'private_key': prv})
         else:
             return jsonify({'error': 502})
 
