@@ -1,4 +1,5 @@
 
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -25,5 +26,12 @@ y = np.array(enco.transform(i))
 gnd = RandomForestClassifier()
 gnd.fit(x, y)
 
-#prd = gnd.predict()
+class get_():
+    def pridict(self, symptm):
+        sym = symptm.split(',')
+        xt = [sym]
+        prd = gnd.predict(xt)
+        return enco.inverse_transform(prd)
+
+#print(get_().pridict('1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0'))
 
