@@ -28,10 +28,14 @@ gnd.fit(x, y)
 
 class get_():
     def pridict(self, symptm):
-        sym = symptm.split(',')
-        xt = [sym]
-        prd = gnd.predict(xt)
-        return enco.inverse_transform(prd)
+        try:
+            sym = symptm.split(',')
+            xt = [sym]
+            prd = gnd.predict(xt)
+            return enco.inverse_transform(prd)
+        
+        except: return None
 
+ 
 #print(get_().pridict('1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0'))
 
