@@ -1,6 +1,4 @@
-# flutter_health
-
-A new Flutter project.
+# HealthCare Project
 
 ## Getting Started
 
