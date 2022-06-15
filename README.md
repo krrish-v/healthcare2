@@ -22,24 +22,6 @@ A few resources to get you started if this is your first Flutter project:
 - [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
 
 
-
-### Team Memebers
-
-Val***aia - Market Research & Machine Learning model
-
-E*** - Prototype(Final polishing on Figma) & Images for Front-end
-
-Uc***yi  - Develop and design Front-end( & Integration with Backend)
-
-Kr***h - Back-end code development( & Integration with Front-end)
-
-St***e - Business Model & Presentation(Problem statement, Target Market & metrics)
-
-Mi***Y - Team Coordination(PM), Business Model, Research, 
-
-A***y - Research, Business Model & Wireframes, high fidelity, Powerpoint slides, Presentation 
-
-
 ### Research articles:
 
 https://capla.arizona.edu/sites/default/files/Telemedicine%20Prototype%20Facility%20Planning%20%26%20Design%20Project%20for%20Arizona%20Rural%20Tribes_1.pdf
