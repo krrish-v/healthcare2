@@ -4,6 +4,8 @@ import hashlib
 import binascii
 import secrets
 import os
+import ecdsa
+from ecdsa import SECP256k1
 
 #padding of data
 # code extarcted from open source library
@@ -38,7 +40,6 @@ def add_padding(message: bytes, target_length: int) -> bytes:\
                      padding,
                      b'\x00',
                      message])
-
 
 #remove pading from decrypted message
 def remove_padding(msg: bytes):
@@ -95,8 +96,6 @@ def aes_gmc(data):
     encrypted_data = aes_(data).encrypt_aes()
     return encrypted_data
 
-
-
 class aes_decrypt():
     def __init__(self, primary_key, nonce, password_hash, data):
         #seperate the encrypted data and authtag
@@ -125,6 +124,19 @@ class aes_decrypt():
 
         return remove_padding(self.decrypt_data)
 
+class DSA():
+    def create_signture(self, privatekey, message: bytes):
+        self.sk = ecdsa.SigningKey(_error__please_use_generate=True).from_string(bytes.fromhex(privatekey), curve=ecdsa.BRAINPOOLP384r1, hashfunc=hashlib.sha3_384)
+        sig_ = self.sk.sign(hashlib.sha3_256(message).hexdigest().encode())
+        sig = bytes.hex(sig_)
+        public_key = bytes.hex(self.sk.get_verifying_key().to_string())
+        return sig, message, public_key
+
+class verf_DSA():
+    def verify_signature(self, signature : bytes, message: bytes, public_key):
+        vk = ecdsa.VerifyingKey.from_string(bytes.fromhex(public_key), curve=ecdsa.BRAINPOOLP384r1, hashfunc=hashlib.sha3_384) # the default is sha1
+        verify = vk.verify(bytes.fromhex(signature), hashlib.sha3_256(message).hexdigest().encode()) # True
+        return verify
 
 #hash = hashlib.sha3_256('password_'.encode()).hexdigest()
 #a = aes_(b'data', hash)
