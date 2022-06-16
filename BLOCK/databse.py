@@ -2,7 +2,8 @@
 import sqlite3
 import random
 import binascii
-#import block as blk
+from hmac import compare_digest
+import block as blk
 
 class create_api():
     def api(self):
@@ -20,7 +21,7 @@ class create_api():
         return blk.hash256(random_string)
 
 class token():
-    def __init__(self):
+    def get(self):
         random_string = ''
  
         for _ in range(64):
@@ -34,10 +35,9 @@ class token():
         
         return blk.hash256(random_string)
 
-
 class get_key():
     def __init__(self):
-        self.conn_ = sqlite3.connect('BLOCK/database/keys.db')
+        self.conn_ = sqlite3.connect('backend/BLOCK/database/keys.db')
 
     def insert(self, token, pub, priv):
         try:
@@ -69,22 +69,21 @@ class get_key():
         
         except: return False
 
-
-class get_in_data():
+class get_in_data_user():
     def __init__(self):
-        self.conn_ = sqlite3.connect('BLOCK/database/data.db')
+        self.conn_ = sqlite3.connect('backend/BLOCK/database/data_user.db')
 
-    def insert(self, token, password, firstname, lastname, address, country, state, zip_code, phone_no, status, date): #random_verifying_code
+    def insert_patient(self, dsakey, api, token, password, firstname, lastname, address, country, state, zip_code, phone_no, status, date): #random_verifying_code
         if 1==1:#try:
             cursor = self.conn_.cursor()
             
             #cursor.execute(
-            #    'create table health_concern (token text not null, password text not null, firstname text not null, lastname text not null, address text not null, country text not null, state text not null, zip_code text not null, phone_no text not null, status text not null, date text not null)'
+            #    'create table hc_patient (dsakey text not null, api text not null, token text not null, password text not null, firstname text not null, lastname text not null, address text not null, country text not null, state text not null, zip_code text not null, phone_no text not null, status text not null, date text not null)'
             #)
 
             cursor.execute(
-                "insert into health_concern values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-                (token, password, firstname, lastname, address, country, state, zip_code, phone_no, status, date)
+                "insert into hc_patient values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+                (dsakey, api, token, password, firstname, lastname, address, country, state, zip_code, phone_no, status, date)
             )
             self.conn_.commit()
             self.conn_.close()
@@ -92,21 +91,32 @@ class get_in_data():
         
         #except: return False
 
-    def load(self):
-        try:
+    def check_patient_info(self, phone, passwd):
+        if 1==1:#try:
             cursor = self.conn_.cursor()
-            cursor.execute("select * from health_concern")
+            com = "select * from hc_patient where phone_no = " + phone
+            cursor.execute(com)
             data = cursor.fetchall()
             self.conn_.close()
+            
             if len(data) != 0:
-                return data
+                data = data[0]
+                old_passwd = data[3]
+            
+                if self.validate(passwd, old_passwd) is True:
+                    return {
+                        'dsakey': data[0],
+                        'api': data[1],
+                        'token': data[2],
+                        'name' : data[4] + ' ' + data[5]
+                    }
+
             
             else: return False
 
-        except: return None
-
-        
-    def update(self, phone_no, field, new_value):
+        #except: return False
+    
+    def update_patient(self, phone_no, field, new_value):
         """
         update selected field
         :return: True|False
@@ -121,10 +131,63 @@ class get_in_data():
             return True
 
         except: return False
+    
+    def insert_doctor(self, dsakey, api, token, email, password, firstname, lastname, address, country, state, zip_code, phone_no, about, specialist_in, status, date): #random_verifying_code
+        if 1==1:#try:
+            cursor = self.conn_.cursor()
+            
+            #cursor.execute(
+            #    'create table hc_doctor (dsakey text not null, api text not null, token text not null, email text not null, password text not null, firstname text not null, lastname text not null, address text not null, country text not null, state text not null, zip_code text not null, phone_no text not null , about text not null, specialist_in text not null, status text not null, date text not null)'
+            #)
+
+            cursor.execute(
+                "insert into hc_doctor values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+                (dsakey, api, token, email, password, firstname, lastname, address, country, state, zip_code, phone_no, about, specialist_in, status, date)
+            )
+            self.conn_.commit()
+            self.conn_.close()
+            return True
+        
+        #except: return False
+
+    def check_doctor_info(self, passwd, email=None, phone=None):
+        if email is None: com = "select * from hc_doctor where phone_no = " + phone
+        
+        elif phone is None: com = "select * from hc_doctor where email = '" + email + "'"
+        
+        else: com = ""
+        
+        try:
+            cursor = self.conn_.cursor()
+            cursor.execute(com)
+            data = cursor.fetchall()
+            self.conn_.close()
+
+            if len(data) != 0:
+                data = data[0]
+                old_passwd = data[4]
+            
+                if self.validate(passwd, old_passwd) is True:
+                    return {
+                        'dsakey': data[0],
+                        'api': data[1],
+                        'token': data[2],
+                        'name' : data[5] + ' ' + data[6],
+                        'specialist': data[13]
+                    }
+
+            
+            else: return False
+
+        except: return False
+
+    def validate(self, passwd, old_passwd):
+        return compare_digest(passwd, old_passwd)
+
 
 class user_api():
     def __init__(self):
-        self.conn_ = sqlite3.connect('BLOCK/database/api.db')
+        self.conn_ = sqlite3.connect('backend/BLOCK/database/api.db')
 
     def insert(self, api): #random_verifying_code
         try:
@@ -156,23 +219,3 @@ class user_api():
             else: return False
 
         except: return None
-
-
-
-#import time
-#tmt = time.ctime()
-#password = blk.hash384('fdewf23c')
-#print(get_in_data().insert('rfewfcesv32rdwffw32d', password, 'harry', 'poter', 'New Delhi Sector 4', 'India', 'New Delhi', '7353', '99999999999', True, str(tmt)))
-#print(get_in_data().load())
-
-#import time
-#tmt = time.ctime()
-#print(get_in_data().update("123","api","100"))
-#print(get_in_data().load())
-
-#ap = create_api().api()
-#q = user_api().insert(ap)
-#print(q)
-#print(ap)
-#t = user_api().check(ap)
-#print(t)
