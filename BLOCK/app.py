@@ -141,6 +141,9 @@ def other_user_pub_key(api, token):
     
     else: return jsonify({'error': 'Incorrect api found'})
 
+@app.route('/find/therapist')
+def find_threapist():
+    return jsonify(get_in_data_user().get_doctor())
 
 @app.route('/chat/symptoms=<symptomslist>') #symptioms should be like 0,1,0,0,0,1,0........
 def sym_deis(symptomslist):
@@ -153,4 +156,3 @@ def sym_deis(symptomslist):
 
 if __name__ == '__main__':
    app.run(host= '127.0.0.1', port=9278, debug=True)
-
