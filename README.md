@@ -12,7 +12,7 @@ For the mental health the digital twin concept could be developed incrementally:
 a. A self-perception avatar from templates 
 b. An adjusted model when a patient adds self measurements 
 c. A model enriched with RPM data when/ if a patient grant permissions (feel stressed from HR, insomnia from sleep tracker etc) 
-d. A model updated with a Computer vision algorithms when/if a patient make a selfie 
+d. A model updated with all symtoms which will detect the exact possible disease
 
 ### Mobile apllilcation Development
 This project is a starting point for a Flutter application.
